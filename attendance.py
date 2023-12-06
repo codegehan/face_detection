@@ -4,6 +4,7 @@ import face_recognition
 import os
 from datetime import datetime
 import time
+import requests
 
 path = 'imageAttendance'
 images = []
@@ -69,6 +70,23 @@ while True:
             markAttendance(name)
             # Make a post request to send data to database
             # print(f'Data to send: {name}')
+            
+            URL = "http://localhost:8080/Face-Recognition/api/Log/Record"
+            PARAMS = {
+                'logKey': '1234567890qwertyuiop',
+                'attendeesKey': name
+            }
+            HEADERS = {
+                'Authorization': 'Bearer eyJUWVAiOiJKV1QiLCJBTEciOiJIUzI1NiJ9.eyJSRUNPUkQiOiJleUpWYzJWeWMxOUJZMk52.STZJbEp2ZDJWdVlTQlRZV2QxYVc0aUxDSl',
+                'API-Key': 'JMCS8280C000HaS9448da4501hBaa62295b187HaS4a060cfd05hjM47fcc96a38HaS9448da45',
+                'Identity': '477466316933354762314336524167685337385278304B664A624C6A5250507A6331556C50723047675F4D',
+                'User-Agent': 'CCS Creative',
+                'Content-Type': 'application/json'  # Adjust the content type as needed
+            }
+            response = requests.post(url=URL, json=PARAMS, headers=HEADERS, verify=False)
+            data = response.json()
+            print(data['Result'][0]['message_info'])
+            print(response.status_code)
         else:
             name = "UNKNOWN"
             y1,x2,y2,x1 = faceLoc 
